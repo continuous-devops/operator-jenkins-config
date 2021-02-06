@@ -22,7 +22,7 @@ app-sre-jcasc.yaml configmap to load an additional app-interface
 podtemplate via a configmap and point to the https://quay.io/repository/arilivigni/app-sre-jenkins-agent quay.io image that has buldah and jenkins slave
 components installed.
 
-# app-sre-jenkins.yaml Jenkins Deployment
+# app-sre-jenkins.yaml - Jenkins Deployment
 
 This is the main deployment and can be installed in the UI through the Jenkins operator using `oc`.
 
