@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-sre-podtemplates
+data:  
+  2-app-sre-podtemplates.yaml: |
+    groovy:
+      - script: >
+          import jenkins.model.*;
+          import org.csanchez.jenkins.plugins.kubernetes.*;
+
+          def kcloud;
+          try {
+              println("===> Configuring k8s...");
+
+              kcloud = Jenkins.instance.clouds.get(0);
+              println "cloud found: ${Jenkins.instance.clouds}";
+
+              def p = new PodTemplate();
+              p.setName('app-interface');
+              p.setLabel('app-interface');
+              p.setRemoteFs('/home/jenkins/agent');
+
+              ContainerTemplate ct = new ContainerTemplate("jnlp", "quay.io/arilivigni/app-sre-jenkins-agent:latest");
+              ct.setAlwaysPullImage(true);
+              ct.setPrivileged(true);
+              ct.setRunAsUser("0");
+              ct.setTtyEnabled(false);
+              ct.setWorkingDir("/home/jenkins");
+              ct.setCommand('');
+              ct.setArgs('${computer.jnlpmac} ${computter.name}');
+              p.setContainers([ct]);
+              kcloud.templates << p;
+              kcloud = null;
+              println("===> Configuring k8s completed");
+          }
+          catch(Exception e) {
+              println "===> Failed to configure kubernetes: " + e;
+              System.exit(1);
+          }
+          finally {
+              kc = null;
+          }
